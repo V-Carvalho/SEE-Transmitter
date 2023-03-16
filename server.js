@@ -1,7 +1,7 @@
 const { SerialPort } = require("serialport");
 
 // Create a port
-const port = new SerialPort({ path: "COM2", baudRate: 57600, autoOpen: false });
+const port = new SerialPort({ path: "COM10", baudRate: 57600, autoOpen: false });
 
 port.open(function (error) {
   if (error) {
@@ -14,7 +14,7 @@ port.on("open", function () {
   console.log(`Porta ${port.path} aberta e conectada!`);
 });
 
-// Read data that is available
+// Reading the data
 port.on("data", function (data) {
   const rawData = "9999E60211000"; // data.toString().slice(7, 20);
 
