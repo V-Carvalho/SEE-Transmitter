@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "serialport": "^10.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.21"
+  }
+}
