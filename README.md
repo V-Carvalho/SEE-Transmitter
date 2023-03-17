@@ -1,6 +1,6 @@
 # 📡 SEE Transmitter
 
-Este aplicativo node.js inicia um servidor onde o mesmo recebe os eventos do Viaweb Receiver através da porta serial e retransmite para uma API.
+Este software em node.js inicia um servidor onde o mesmo recebe os eventos do Viaweb Receiver através da porta serial e retransmite para uma API.
 
 ## Getting Started
 
