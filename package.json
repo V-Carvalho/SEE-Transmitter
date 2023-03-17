@@ -1,8 +1,22 @@
 {
+  "name": "see-transmitter",
+  "version": "1.0.0",
+  "description": "Software para receber e retransmitir os eventos do Viaweb Receiver.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Vinicius Carvalho",
+  "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.3",
+    "node-fetch": "^3.3.1",
     "serialport": "^10.5.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.21"
   }
 }
+
