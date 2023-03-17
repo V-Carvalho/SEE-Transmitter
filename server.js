@@ -1,33 +1,59 @@
+require('dotenv').config()
 const { SerialPort } = require("serialport");
 
-// Create a port
+const date = new Date();
 const port = new SerialPort({ path: "COM10", baudRate: 57600, autoOpen: false });
 
-port.open(function (error) {
+// Open the serial port if necessary
+port.open((error) => {
   if (error) {
     console.log("Erro ao abrir porta: ", error.message);
   }
 });
 
-// The open event is always emitted
-port.on("open", function () {
+// Checking if the serial port is open
+port.on("open", () => {
   console.log(`Porta ${port.path} aberta e conectada!`);
 });
 
-// Reading the data
-port.on("data", function (data) {
-  const rawData = "9999E60211000"; // data.toString().slice(7, 20);
+// Reading serial port data
+port.on("data", (data) => { 
+  if (data.toString().includes('@')) {
+    console.log("SERVIDOR ONLINE")    
+  } else {    
+    const rawData = data.toString().slice(7, 20);
 
-  const zoneNumber = rawData.slice(-3);
-  console.log(`Zona: ${zoneNumber}`);
-  const accountNumber = rawData.slice(0, 4);
-  console.log(`Nº da conta: ${accountNumber}`);
-  const eventCode = rawData.slice(4, 8);
-  console.log(`Cod. do evento: ${eventCode}`);
-  const partitionNumber = rawData.slice(8, 10);
-  console.log(`Nº da partição: ${partitionNumber}`);
+    const zoneNumber = rawData.slice(-3);
+    const accountNumber = rawData.slice(0, 4);
+    const eventCode = rawData.slice(4, 8);
+    const partitionNumber = rawData.slice(8, 10);
+    const dateEvent = `${date.getDate()}/${(date.getMonth() + 1)}/${date.getFullYear()}`;
+    const eventTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+    saveEvent(zoneNumber, accountNumber, eventCode, partitionNumber, dateEvent, eventTime);
+  }  
 });
 
-port.on("error", function (error) {
-  console.log("Porta desconectada: ", error.message);
-});
+saveEvent = async (zoneNumber, accountNumber, eventCode, partitionNumber, dateEvent, eventTime) => { 
+  await fetch(process.env.SEE_API_DATABASE, {
+    method: 'POST',
+    body: JSON.stringify({
+      zoneNumber: zoneNumber,
+      accountNumber: accountNumber,
+      eventCode: eventCode,
+      partitionNumber: partitionNumber,
+      dateEvent: dateEvent,
+      eventTime: eventTime
+    }),
+    headers: {"Content-type": "application/json; charset=UTF-8"}
+  })
+  .then(response => {
+    if (response.status == 200) {
+      console.log(`Evento salvo com sucesso!`)
+    }    
+  })
+  .catch(error => {
+    console.log(`Erro ao salvar evento: ${error}!`) 
+  });
+}
+
