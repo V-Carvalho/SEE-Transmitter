@@ -1,7 +1,6 @@
 require('dotenv').config()
 const { SerialPort } = require("serialport");
 
-const date = new Date();
 const port = new SerialPort({ path: "COM10", baudRate: 57600, autoOpen: false });
 
 // Open the serial port if necessary
@@ -20,24 +19,27 @@ port.on("open", () => {
 port.on("data", (data) => { 
   if (data.toString().includes('@')) {
     console.log("SERVIDOR ONLINE")    
-  } else {    
+  } else {
+    let date = new Date();     
     const rawData = data.toString().slice(7, 20);
 
-    const zoneNumber = rawData.slice(-3);
-    const accountNumber = rawData.slice(0, 4);
-    const eventCode = rawData.slice(4, 8);
-    const partitionNumber = rawData.slice(8, 10);
-    const dateEvent = `${date.getDate()}/${(date.getMonth() + 1)}/${date.getFullYear()}`;
-    const eventTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const attendedEvent = false;
+    let zoneNumber = rawData.slice(-3);
+    let accountNumber = rawData.slice(0, 4);
+    let eventCode = rawData.slice(4, 8);
+    let partitionNumber = rawData.slice(8, 10);
+    let dateEvent = `${date.getDate()}/${(date.getMonth() + 1)}/${date.getFullYear()}`;
+    let eventTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-    saveEvent(zoneNumber, accountNumber, eventCode, partitionNumber, dateEvent, eventTime);
+    saveEvent(attendedEvent,zoneNumber, accountNumber, eventCode, partitionNumber, dateEvent, eventTime);
   }  
 });
 
-saveEvent = async (zoneNumber, accountNumber, eventCode, partitionNumber, dateEvent, eventTime) => { 
+saveEvent = async (attendedEvent, zoneNumber, accountNumber, eventCode, partitionNumber, dateEvent, eventTime) => { 
   await fetch(process.env.SEE_API_DATABASE, {
     method: 'POST',
     body: JSON.stringify({
+      attendedEvent: attendedEvent,
       zoneNumber: zoneNumber,
       accountNumber: accountNumber,
       eventCode: eventCode,
