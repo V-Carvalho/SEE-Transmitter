@@ -21,7 +21,7 @@ port.on("data", (data) => {
     console.log("SERVIDOR ONLINE")    
   } else {
     let date = new Date();     
-    const rawData = data.toString().slice(7, 20);
+    let rawData = data.toString().slice(7, 20);
 
     const attendedEvent = false;
     let zoneNumber = rawData.slice(-3);
